@@ -18,49 +18,48 @@ const Notes = () => {
   const [showModal, setShowModal] = useState(false); // State for showing the modal
   const [noteToDelete, setNoteToDelete] = useState(null); // State to store the note to delete
   const navigate = useNavigate();
-
   useEffect(() => {
-    let token = localStorage.getItem('token');
-
-    if(token === null){
-      navigate('/login')
-    }
-
-
-  const fetchNotes = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/api/notes', {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Memastikan bahwa data.notes adalah array sebelum menggunakannya
-        if (Array.isArray(data.data)) {
-          setNotes(data.data);
-        } else {
-          console.log('Invalid notes data:', data);
-        }
-      } else {
-        console.log('Failed to fetch notes:', data);
+      let token = localStorage.getItem('token');
+  
+      if(token === null){
+        navigate('/login')
       }
-    } catch (error) {
-      console.log('Error:', error);
-    }
-  };
+  
 
-  fetchNotes();
-}, []);
+    const fetchNotes = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/notes', {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Memastikan bahwa data.notes adalah array sebelum menggunakannya
+          if (Array.isArray(data.data)) {
+            setNotes(data.data);
+          } else {
+            console.log('Invalid notes data:', data);
+          }
+        } else {
+          console.log('Failed to fetch notes:', data);
+        }
+      } catch (error) {
+        console.log('Error:', error);
+      }
+    };
+
+    fetchNotes();
+  }, []);
 
   const editNote = (note) => {
     localStorage.setItem('editNote', JSON.stringify(note));
     navigate('/enotes');
   };
-
+  
   const deleteNote = async (id) => {
     try {
       await axios.delete(`http://localhost:8000/api/notes/${id}`, {
@@ -107,14 +106,6 @@ const Notes = () => {
     note.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleLogout = () => {
-    // Menghapus token otentikasi dari local storage atau cookies
-    localStorage.removeItem('token'); // Jika token disimpan di local storage
-    // document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;' // Jika token disimpan dalam cookies
-    console.log('Logout berhasil.');
-    // Redirect ke halaman login setelah logout
-    navigate('/login');
-  };
 
   return (
     <div className="overflow-x-hidden">
@@ -234,14 +225,7 @@ const Notes = () => {
         pauseOnHover
       />
       </div>
-    // <div>
-    //   <h1>Halaman Utama</h1>
-    //   <button 
-    //   onClick={handleLogout}
-    //   >
-    //     Logout</button>
-    //   {/* Tambahkan konten halaman utama lainnya di sini */}
-    // </div>
+    
   );
 };
 
